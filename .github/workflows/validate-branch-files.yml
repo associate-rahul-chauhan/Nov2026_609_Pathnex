@@ -1,0 +1,44 @@
+
+name: Validate Branch Files
+
+on:
+  push:
+    branches:
+      - '**'
+
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-files:
+    name: Check day and week files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Validate required files
+        shell: bash
+        run: |
+          files="$(git ls-files)"
+
+          # Check for day* files
+          if ! printf '%s\n' "$files" | grep -Eq '(^|/)day[^/]*$'; then
+            echo "ERROR: No file starting with 'day' found."
+            exit 1
+          fi
+
+          # Check for week* files
+          if ! printf '%s\n' "$files" | grep -Eq '(^|/)week[^/]*$'; then
+            echo "ERROR: No file starting with 'week' found."
+            exit 1
+          fi
+
+          echo "SUCCESS: Both day* and week* files exist."
