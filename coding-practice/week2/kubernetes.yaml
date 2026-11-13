@@ -1,0 +1,27 @@
+# creating a ybl file which will create the pod
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  # now lets see the metadata section , suppose i want to give label
+  labels:
+    app: my-app
+    env: dev
+    #lets put annotations
+    annotations:
+      description: "this is ny pod"
+      owner: "Rahul"
+  spec:
+    containers:
+      - name: my-container
+        image: nginx
+        resources:
+          limits:
+            memory: "128mi" #memory in MIB
+            cpu: "100m" #its mean 0.1 core cpu
+          requests:
+            memory: "64mi"
+            cpu: "50m"
+        ports:
+          - containerPort: 80
