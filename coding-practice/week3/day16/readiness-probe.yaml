@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: readiness-pod-1
+spec:
+  containers:
+    - name: main-app-2
+      image: nginx
+      readinessProbe:
+        httpGet:
+          path: /wrong-path
+          port: 80
+        initialDelaySeconds: 30
+        periodSeconds: 5
+        failureThreshold: 2
