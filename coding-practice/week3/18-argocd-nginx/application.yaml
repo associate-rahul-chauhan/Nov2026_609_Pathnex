@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1             # API group/version for Argo CD custom resources
+kind: Application                            # Argo CD object that links a Git repo to a cluster target
+metadata:                                    # Identifying info about this Application
+  name: nginx-demo                           # Name of the Application shown in the Argo CD UI
+  namespace: argocd                          # Namespace where Argo CD runs; Application objects must live here
+spec:                                        # Desired state of the Application
+  project: default                           # Argo CD project (permission group); "default" allows everything
+  source:                                    # Where the manifests come from
+    repoUrl: https://github.com/associate-rahul-chauhan/argocd-learning.git                                # NOTE: must be "repoURL" (capital URL) and needs a value, e.g. https://github.com/<user>/<repo>.git
+    targetRevision: main                     # Git branch, tag or commit to deploy
+    path: apps/nginx                         # Folder inside the repo holding the YAML files (must exist in the repo)
+  destination:                               # Where to deploy
+    server: https://kubernetes.default.svc   # The cluster Argo CD itself runs in
+    namespace: demo                          # Namespace to deploy the app into
+  syncPolicy:                                # How syncing is done
+    automated:                               # Sync automatically, no manual button click
+      prune: true                            # Delete cluster resources that were removed from Git
+      selfHeal: true                         # Undo manual changes made in the cluster, restoring Git state
+    syncOptions:                             # Extra sync settings
+      - CreateNamespace=true                 # Create the "demo" namespace if it does not exist

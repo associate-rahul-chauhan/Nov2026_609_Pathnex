@@ -1,0 +1,19 @@
+apiVersion: apps/v1                          # API group/version used for Deployment objects
+kind: Deployment                             # Type of object: manages a set of identical pods
+metadata:                                    # Identifying info about this Deployment
+  name: nginx                                # Name of the Deployment
+spec:                                        # Desired state of the Deployment
+  replicas: 2                                # Run 2 copies (pods) of nginx
+  selector:                                  # How the Deployment finds the pods it owns
+    matchLabels:                             # Match pods that have these labels
+      app: nginx                             # Pods labelled app=nginx belong to this Deployment (must match template labels)
+  template:                                  # Blueprint used to create each pod
+    metadata:                                # Metadata for the pods
+      labels:                                # Labels attached to every pod
+        app: nginx                           # Label that the selector above and the Service use to find pods
+    spec:                                    # Pod specification
+      containers:                            # List of containers in the pod
+        - name: nginx                        # Container name (the "-" starts a list item)
+          image: nginx:1.27                  # Image to pull from Docker Hub, pinned to version 1.27
+          ports:                             # Ports the container listens on
+            containerPort: 80                # NOTE: this should be a list item: "- containerPort: 80". Without the "-", Kubernetes rejects it
