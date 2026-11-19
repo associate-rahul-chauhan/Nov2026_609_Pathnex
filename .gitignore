@@ -1,7 +1,0 @@
-hide_content.txt
-
-# Terraform
-**/.terraform/
-*.tfstate
-*.tfstate.*
-crash.log
