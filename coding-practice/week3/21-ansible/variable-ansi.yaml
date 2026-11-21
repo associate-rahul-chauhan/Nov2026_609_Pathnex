@@ -1,0 +1,23 @@
+---
+- name: Configure web Server
+  hosts: web
+  become: true
+
+  vars: 
+   package_name: nginx
+   service_name: nginx
+   web_port: 80
+
+  tasks:
+   - name: Install {{package_name}}
+     apt:
+       name: "{{package_name}}"
+       state: present
+   - name: "{{package_name}}"
+     state: present
+
+      - name: Start {{ service_name }}
+      service:
+        name: "{{ service_name }}"
+        state: started
+        enabled: yes

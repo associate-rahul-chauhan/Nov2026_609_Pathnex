@@ -1,0 +1,22 @@
+---
+- name:
+  hosts:
+  become:
+
+tasks:
+ - name: Update apt cache
+   apt:
+    update_cache: yes
+
+  - name: Install nginx
+    apt:
+     name: nginx
+     state: present
+
+  - name: Start nginx service
+    service:
+     name: nginx
+     state: started
+     enabled: yes
+
+  # rn this command with ansible-playbook -i  inventory install-nginx.yaml
