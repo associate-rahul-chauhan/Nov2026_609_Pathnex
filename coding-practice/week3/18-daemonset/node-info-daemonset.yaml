@@ -1,0 +1,37 @@
+apiVersion: apps/v1 # API group/version used for DaemonSet objects
+kind: DaemonSet # Type of object: runs exactly one pod on every node
+metadata: # Identifying info about this DaemonSet
+  name: node-info # Name of the DaemonSet
+  namespace: default # Namespace to create it in
+  labels: # Labels on the DaemonSet object itself
+    app: node-info # Label for finding/grouping this DaemonSet (kubectl get ds -l app=node-info)
+spec: # Desired state of the DaemonSet
+  selector: # How the DaemonSet finds the pods it owns
+    matchLabels: # Match pods that have these labels
+      app: node-info # Pods labelled app=node-info belong to this DaemonSet (must match template labels)
+  template: # Blueprint used to create the pod on each node
+    metadata: # Metadata for the pods
+      labels: # Labels attached to every pod
+        app: node-info # Label the selector above uses to find the pods
+    spec: # Pod specification
+      nodeSelector:
+        kubernetes.io/hostname: minikube-m02
+      containers: # List of containers in the pod
+        - name: node-info # Container name (the "-" starts a list item)
+          image: busybox:1.36 # Small Linux image with sh, date and hostname, pinned to 1.36
+          env: # Environment variables set inside the container
+            - name: NODE_NAME # Variable name the script reads as ${NODE_NAME}
+              valueFrom: # Take the value from the cluster instead of a fixed string
+                fieldRef: # Read a field of this pod's own object (downward API)
+                  fieldPath: spec.nodeName # Name of the node this pod is scheduled on
+          command: ["/bin/sh", "-c"] # Run the shell and let it execute the script given in args
+          args: # Arguments passed to the command above
+            - | # Start of a multi-line script (the "|" keeps line breaks)
+              echo "==========================================";   # Print a separator line
+              echo "DaemonSet pod started on node: ${NODE_NAME}";   # Print the node name from the env variable
+              echo "Pod IP: $(hostname -i)";                        # Print the pod's IP address
+              echo "==========================================";   # Print a separator line
+              while true; do                                        # Loop forever so the container keeps running
+                echo "[$(date)] I am alive on node ${NODE_NAME}";   # Log a timestamped heartbeat
+                sleep 30;                                           # Wait 30 seconds between heartbeats
+              done                                                  # End of loop

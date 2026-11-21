@@ -1,0 +1,10 @@
+apiVersion: v1                               # API version for core objects like Service
+kind: Service                                # Type of object: stable network endpoint for pods
+metadata:                                    # Identifying info about this Service
+  name: nginx                                # Name of the Service (also its DNS name inside the cluster)
+spec:                                        # Desired state of the Service
+  selector:                                  # Which pods receive traffic
+    app: nginx                               # Send traffic to pods labelled app=nginx
+  ports:                                     # Ports exposed by the Service
+    - port: 80                               # Port the Service listens on
+    targetPort: 80                           # NOTE: needs 2 more spaces of indent so it sits under "- port: 80" in the same list item. Port on the pod to forward to

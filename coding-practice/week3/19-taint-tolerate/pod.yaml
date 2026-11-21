@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: taint-tolerate-pod
+  namespace: default
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: minikube-m03
+
+  tolerations:
+    - key: "main"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+      # tolerationSeconds: 3600 #what this mean is the duration (in seconds) for which the toleration will be valid
+
+  containers:
+    - name: nginx
+      image: nginx
+      ports:
+        - containerPort: 80
