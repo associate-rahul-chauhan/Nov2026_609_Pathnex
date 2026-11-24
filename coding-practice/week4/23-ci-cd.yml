@@ -1,0 +1,43 @@
+stages:
+ - install 
+ - test
+ - build
+ - deploy
+
+variables:
+  NODE_ENV: production
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependencies:
+  stage: install
+  image: node:22
+  script:
+    - npm ci
+
+run_tests: 
+  stage: test
+  image: node:22
+  script:
+    - npm test
+
+build_application:
+  stage: build
+  image: node:22
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - .next/
+    expire_in: 1 week
+
+deploy_application:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - echo "Deploying Next.js application..."
+  only:
+    - main
