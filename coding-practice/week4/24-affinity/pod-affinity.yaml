@@ -1,20 +1,32 @@
+# Pod 1: target pod. Iska label app=demo hai, isse affinity match hogi.
 apiVersion: v1
 kind: Pod
 metadata:
-  name: web-pod-required
+  name: simple-pod
+  labels:
+    app: demo
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sleep", "300"]
+---
+# Pod 2: ye pod usi node par jayega jahan app=demo label wala pod chal raha hai.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-affinity-pod
+  labels:
+    app: follower
 spec:
   affinity:
     podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:   # HARD rule
-      - labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - cache
-        topologyKey: kubernetes.io/hostname             # same NODE par
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app: demo
+          topologyKey: kubernetes.io/hostname
   containers:
-  - name: nginx
-    image: nginx
-    ports:
-    - containerPort: 80
+    - name: busybox
+      image: busybox
+      command: ["sleep", "300"]

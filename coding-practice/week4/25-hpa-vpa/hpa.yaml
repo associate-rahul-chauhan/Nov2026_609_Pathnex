@@ -1,0 +1,32 @@
+# API group aur version jisme HorizontalPodAutoscaler define hai (v2 me multiple metrics support hai)
+apiVersion: autoscaling/v2
+# Object ka type: HPA
+kind: HorizontalPodAutoscaler
+metadata:
+  # HPA ka naam (kubectl get hpa my-app-hpa)
+  name: my-app-hpa
+spec:
+  # Kis workload ko scale karna hai
+  scaleTargetRef:
+    # Target ka API group/version
+    apiVersion: apps/v1
+    # Target ka type
+    kind: Deployment
+    # Target Deployment ka naam (same namespace me hona chahiye)
+    name: php-apache
+  # Kam se kam itne pods hamesha chalenge
+  minReplicas: 1
+  # Load kitna bhi ho, isse zyada pods nahi banenge
+  maxReplicas: 6
+  # Scale karne ka basis (metrics list)
+  metrics:
+    # Metric type: pod ke resource usage (CPU/memory) par
+    - type: Resource
+      resource:
+        # Kaunsa resource dekhna hai
+        name: cpu
+        target:
+          # Utilization = pod ke CPU request ka percentage
+          type: Utilization
+          # Average CPU 70% se upar gaya to scale up, neeche gaya to scale down
+          averageUtilization: 70
