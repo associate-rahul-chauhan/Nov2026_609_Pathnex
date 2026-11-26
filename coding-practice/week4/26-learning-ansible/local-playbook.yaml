@@ -1,0 +1,19 @@
+---
+- name: First PlayBook - System Info
+  hosts: web
+  gather_facts: yes
+
+  tasks:
+    - name: Print Hostname
+      debug: 
+        msg: "Hostname: {{ansible_hostname}}"
+        
+    - name: OS Family Hostname
+      ignore_errors: yes // will be ignore and count will be 1 as msg in wrong format
+      debug: 
+        msgsd: "OS Family: {{ ansible_os_family }}"
+              
+    - name: Check the disck
+      command: df -h
+      register: disk_output
+        
