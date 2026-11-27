@@ -1,0 +1,26 @@
+---
+# Ek play = "kin hosts pe, kaun se tasks chalane hain"
+- name: Install and check Nginx          # Play ka naam (output me dikhta hai)
+  hosts: web                             # inventory.ini ke [web] group (wsl1) pe chalao
+  become: yes                            # sudo/root privilege se tasks chalao (apt install ke liye zaroori)
+
+  tasks:                                 # Tasks ki list, upar se neeche order me chalti hai
+
+    - name: Apt Cache update             # Task ka naam (output me dikhta hai)
+      apt:                               # Debian/Ubuntu ka package manager module
+        update_cache: yes                # apt update chalao (package list refresh)
+        cache_valid_time: 3600           # Cache 1 ghante (3600 sec) se purana ho tabhi update karo, warna skip
+
+    - name: Install Nginx
+      apt:                               # apt module phir se
+        name: nginx                      # Kaunsa package chahiye
+        state: present                   # Install hona chahiye (already hai to kuch nahi karega, idempotent)
+
+    - name: Nginx status
+      command: systemctl status nginx    # Shell command chalao: nginx service ka status
+      register: nginx_status             # Command ka output variable nginx_status me save karo
+      changed_when: false                # Ye sirf check hai, isliye "changed" count mat karo
+
+    - name: Print nginx status
+      debug:                             # Screen pe message print karne ka module
+        msg: "Nginx status: {{ nginx_status.stdout }}"   # Upar save kiye gaye output ka stdout (text) print karo
