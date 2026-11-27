@@ -1,0 +1,14 @@
+- hosts: web
+  become: yes
+  tasks:
+    - name: Nginx config
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+      notify: Restart nginx         # <-- handler ko notify
+
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted

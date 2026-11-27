@@ -1,0 +1,8 @@
+
+- name: Index ke saath
+  debug:
+    msg: "Item {{ index }}: {{ item }}"
+  loop:
+    - nginx
+    - git
+  loop_control:
