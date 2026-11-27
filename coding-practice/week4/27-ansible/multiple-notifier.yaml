@@ -1,0 +1,17 @@
+- name: Config copy
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify:
+    - Reload nginx
+    - Log message
+
+handlers:
+  - name: Reload nginx
+    service:
+      name: nginx
+      state: reloaded      # graceful reload
+
+  - name: Log message
+    debug:
+      msg: "Config changes, nginx reload "

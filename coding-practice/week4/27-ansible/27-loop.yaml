@@ -1,0 +1,13 @@
+- name: Install in loop
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - nginx
+    - htop
+    - git
+    - curl
+    - vim
+
+    # item is varaible
+    # that apt install will be in loop for 5 items
